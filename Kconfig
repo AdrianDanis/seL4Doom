@@ -9,7 +9,7 @@ source "kernel/Kconfig"
 endmenu
 
 menu "seL4 Applications"
-    source "apps/doom/Kconfig"
+    source "apps/seL4Doom/Kconfig"
 endmenu
 
 menu "seL4 Libraries"
@@ -19,7 +19,6 @@ menu "seL4 Libraries"
     source "libs/libsel4vka/Kconfig"
     source "libs/libsel4vspace/Kconfig"
     source "libs/libelf/Kconfig"
-    source "libs/libsel4bga/Kconfig"
     source "libs/libpci/Kconfig"
     source "libs/libsel4allocman/Kconfig"
     source "libs/libcpio/Kconfig"
