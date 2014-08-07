@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<manifest>
+
+<remote name="seL4"
+fetch="git@github.com/seL4/"
+/>
+
+<remote name="AdrianDanis"
+fetch="."
+/>
+
+<default revision="master"
+remote="seL4"
+/>
+
+<project name="seL4.git" path="kernel" revision="experimental"/>
+<project name="common-tool.git" path="tools/common"/>
+<project name="kbuild-tool.git" path="tools/kbuild"/>
+<project name="elfloader-tool.git" path="tools/elfloader"/>
+<project name="libmuslc.git" path="libs/libmuslc"/>
+<project name="libsel4muslcsys.git" path="libs/libsel4muslcsys"/>
+<project name="libsel4bga.git" path="libs/libsel4bga"/>
+<project name="libsel4platsupport.git" path="libs/libsel4platsupport"/>
+<project name="libsel4allocman.git" path="libs/libsel4allocman"/>
+<project name="libpci.git" path="libs/libpci"/>
+<project name="libelf.git" path="libs/libelf"/>
+<project name="libsel4vka.git" path="libs/libsel4vka"/>
+<project name="libsel4vspace.git" path="libs/libsel4vspace"/>
+<project name="libsel4utils.git" path="libs/libsel4utils"/>
+<project name="libcpio.git" path="libs/libcpio"/>
+<project name="libsel4simple.git" path="libs/libsel4simple"/>
+<project name="libsel4simple-stable.git" path="libs/libsel4simple-stable"/>
+<project name="libplatsupport.git" path="libs/libplatsupport"/>
+<project name="libutils.git" path="libs/libutils"/>
+<project remote="AdrianDanis" name="seL4Doom.git" path="apps/doom" revision="master"/>
+<project remote="AdrianDanis" name="seL4Doom.git" path="projects/doom" revision="project">
+    <linkfile src="Makefile" dest="Makefile"/>
+    <linkfile src="Kbuild" dest="Kbuild"/>
+    <linkfile src="Kconfig" dest="Kconfig"/>
+    <linkfile src="configs" dest="configs"/>
+    <linkfile src="../../kernel/libsel4" dest="libs/libsel4"/>
+</project>
+
+</manifest>
