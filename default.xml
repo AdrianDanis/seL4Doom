@@ -20,7 +20,6 @@ remote="seL4"
 <project name="elfloader-tool.git" path="tools/elfloader"/>
 <project name="libmuslc.git" path="libs/libmuslc"/>
 <project name="libsel4muslcsys.git" path="libs/libsel4muslcsys"/>
-<project name="libsel4bga.git" path="libs/libsel4bga"/>
 <project name="libsel4platsupport.git" path="libs/libsel4platsupport"/>
 <project name="libsel4allocman.git" path="libs/libsel4allocman"/>
 <project name="libpci.git" path="libs/libpci"/>
