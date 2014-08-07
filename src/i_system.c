@@ -21,7 +21,6 @@
 //
 //-----------------------------------------------------------------------------
 
-#if 0
 static const char
 rcsid[] = "$Id: m_bbox.c,v 1.1 1997/02/03 22:45:10 b1 Exp $";
 
@@ -42,9 +41,6 @@ rcsid[] = "$Id: m_bbox.c,v 1.1 1997/02/03 22:45:10 b1 Exp $";
 #include "d_net.h"
 #include "g_game.h"
 
-#ifdef __GNUG__
-#pragma implementation "i_system.h"
-#endif
 #include "i_system.h"
 
 
@@ -183,4 +179,3 @@ void I_Error (char *error, ...)
     
     exit(-1);
 }
-#endif

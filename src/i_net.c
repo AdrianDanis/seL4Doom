@@ -21,7 +21,6 @@
 //
 //-----------------------------------------------------------------------------
 
-#if 0
 static const char
 rcsid[] = "$Id: m_bbox.c,v 1.1 1997/02/03 22:45:10 b1 Exp $";
 
@@ -75,7 +74,7 @@ boolean NetListen (void);
 // NETWORKING
 //
 
-int	DOOMPORT =	(IPPORT_USERRESERVED +0x1d );
+int	DOOMPORT =	(IPPORT_RESERVED +0x1d );
 
 int			sendsocket;
 int			insocket;
@@ -347,5 +346,3 @@ void I_NetCmd (void)
     else
 	I_Error ("Bad net cmd: %i\n",doomcom->command);
 }
-
-#endif

@@ -1,4 +1,4 @@
-menuconfig APP_DOOM
+menuconfig APP_SEL4_DOOM
     bool "seL4Doom"
     default y
     depends on LIB_SEL4 && LIB_MUSL_C && LIB_SEL4_PLAT_SUPPORT && LIB_SEL4_MUSLC_SYS
