@@ -3,7 +3,7 @@
 <manifest>
 
 <remote name="seL4"
-fetch="git@github.com/seL4/"
+fetch="ssh://git@github.com/seL4/"
 />
 
 <remote name="AdrianDanis"
