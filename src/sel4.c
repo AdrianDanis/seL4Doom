@@ -27,6 +27,7 @@
 #include <sel4utils/vspace.h>
 #include <syscall_stubs_sel4.h>
 #include <sel4platsupport/platsupport.h>
+#include <sel4utils/stack.h>
 
 static void (*next_function)(void) = NULL;
 
@@ -34,10 +35,23 @@ allocman_t *allocman;
 vka_t global_vka;
 simple_t global_simple;
 vspace_t global_vspace;
-static char initial_mem_pool[1 * 1024 * 1024];
+static char initial_mem_pool[8 * 1024];
 static sel4utils_alloc_data_t vspace_alloc_data;
+extern vspace_t *muslc_this_vspace;
+extern reservation_t *muslc_brk_reservation;
+static reservation_t brk_reservation;
+extern void *muslc_brk_reservation_start;
+
+/* this pool is virtual, so can make it big */
+#define ALLOCMAN_POOL_SIZE (16 * 1024 * 1024)
+
+/* maximal size of the heap */
+#define HEAP_SIZE (64 * 1024 * 1024)
 
 static void sel4_init_continued(void) {
+    reservation_t *reservation;
+    void *vaddr;
+    int error;
     /* Set our syscall table. We sort of prayed no one did this earlier
      * but we couldn't set it on our other stack */
     SET_MUSLC_SYSCALL_TABLE;
@@ -45,6 +59,16 @@ static void sel4_init_continued(void) {
     platsupport_serial_setup_simple(&global_vspace, &global_simple, &global_vka);
     /* Test it */
     printf("Initializing seL4Doom OS...\n");
+    /* configure the heap */
+    muslc_this_vspace = &global_vspace;
+    muslc_brk_reservation = &brk_reservation;
+    error = sel4utils_reserve_range_no_alloc(&global_vspace, &brk_reservation, HEAP_SIZE, seL4_AllRights, 1, &muslc_brk_reservation_start);
+    assert(!error);
+    /* Give allocman a small virtual memory pool for putting book keeping in */
+    reservation = vspace_reserve_range(&global_vspace, ALLOCMAN_POOL_SIZE, seL4_AllRights, 1, &vaddr);
+    assert(reservation);
+    bootstrap_configure_virtual_pool(allocman, vaddr, ALLOCMAN_POOL_SIZE, simple_get_pd(&global_simple));
+    printf("Completed seL4Doom OS initialization. Running doom...\n");
     /* go run whatever we were told to */
     next_function();
 }
