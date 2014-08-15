@@ -35,5 +35,5 @@ call c_start
 
 .bss
 .align 16
-.space 1024
+.space 4096
 _stack:
