@@ -19,15 +19,12 @@
 #include <sel4/sel4.h>
 #include <sel4/bootinfo.h>
 
-void sel4_init(void(*proc)(void));
-void c_start_continued(void) {
-    main(1, &"seL4Doom");
-}
+void sel4_init(const char *name);
 void c_start(seL4_BootInfo *bootinfo) {
     /* set GS */
     asm volatile("movw %w0, %%gs" :: "r"(IPCBUF_GDT_SELECTOR));
     /* set bootinfo */
     seL4_InitBootInfo(bootinfo);
     /* perform seL4 rootserver init (init stuff, switch stack, then finally call main) */
-    sel4_init(c_start_continued);
+    sel4_init("seL4Doom");
 }

@@ -29,7 +29,7 @@
 #include <sel4platsupport/platsupport.h>
 #include <sel4utils/stack.h>
 
-static void (*next_function)(void) = NULL;
+static const char *prog_name = NULL;
 
 allocman_t *allocman;
 vka_t global_vka;
@@ -48,13 +48,16 @@ extern void *muslc_brk_reservation_start;
 /* maximal size of the heap */
 #define HEAP_SIZE (64 * 1024 * 1024)
 
-static void sel4_init_continued(void) {
+int main(int argc,char *argv[]);
+int __libc_start_main(
+    int (*main)(int, char **, char **), int argc, char **argv,
+    int (*init)(int, char **, char **), void (*fini)(void),
+    void (*ldso_fini)(void));
+
+static int main_wrapper(int argc, char *argv[], char *env[]) {
     reservation_t *reservation;
     void *vaddr;
     int error;
-    /* Set our syscall table. We sort of prayed no one did this earlier
-     * but we couldn't set it on our other stack */
-    SET_MUSLC_SYSCALL_TABLE;
     /* Get printf working */
     platsupport_serial_setup_simple(&global_vspace, &global_simple, &global_vka);
     /* Test it */
@@ -69,11 +72,26 @@ static void sel4_init_continued(void) {
     assert(reservation);
     bootstrap_configure_virtual_pool(allocman, vaddr, ALLOCMAN_POOL_SIZE, simple_get_pd(&global_simple));
     printf("Completed seL4Doom OS initialization. Running doom...\n");
-    /* go run whatever we were told to */
-    next_function();
+    /* Call to the actual main */
+    return main(argc, argv);
 }
 
-void sel4_init(void (*next)(void)) {
+static int sel4_init_continued(void) {
+    /* Set our syscall table. We sort of prayed no one did this earlier
+     * but we couldn't set it on our other stack */
+    SET_MUSLC_SYSCALL_TABLE;
+    /* Now we can get to standard init code */
+    char *argv[] = {
+        (char*)prog_name,
+        NULL,
+        (char*)"HOME=",
+        NULL
+    };
+    __libc_start_main(main_wrapper, 1, argv, NULL, NULL, NULL);
+    return 0;
+}
+
+void sel4_init(const char *progname) {
     seL4_BootInfo *bootinfo;
     /* Get bootinfo and init simple so we can forget about bootinfo */
     bootinfo = seL4_GetBootInfo();
@@ -85,7 +103,7 @@ void sel4_init(void (*next)(void)) {
     allocman_make_vka(&global_vka, allocman);
     /* Create vspace */
     sel4utils_bootstrap_vspace_with_bootinfo(&global_vspace, &vspace_alloc_data, simple_get_pd(&global_simple), &global_vka, bootinfo, NULL, NULL);
-    /* We have enough to get the hell of whatever piece of shit stack we are on */
-    next_function = next;
+    /* We have enough to get the hell of whatever piece of shit stack we are on and start running properly */
+    prog_name = progname;
     sel4utils_run_on_stack(&global_vspace, sel4_init_continued);
 }
